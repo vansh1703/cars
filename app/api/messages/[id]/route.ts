@@ -2,7 +2,9 @@ import { supabase } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 import { getAdminSession } from '@/lib/auth'
 
-export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+type Params = Promise<{ id: string }>
+
+export async function PATCH(request: Request, { params }: { params: Params }) {
   const { id } = await params
   const session = await getAdminSession()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

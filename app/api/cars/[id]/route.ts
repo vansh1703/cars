@@ -2,14 +2,16 @@ import { supabase } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 import { getAdminSession } from '@/lib/auth'
 
-export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+type Params = Promise<{ id: string }>
+
+export async function GET(_req: Request, { params }: { params: Params }) {
   const { id } = await params
   const { data, error } = await supabase.from('cars').select('*').eq('id', id).single()
   if (error) return NextResponse.json({ error: 'Car not found' }, { status: 404 })
   return NextResponse.json(data)
 }
 
-export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(request: Request, { params }: { params: Params }) {
   const { id } = await params
   const session = await getAdminSession()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -19,7 +21,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   return NextResponse.json(data)
 }
 
-export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(_req: Request, { params }: { params: Params }) {
   const { id } = await params
   const session = await getAdminSession()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
