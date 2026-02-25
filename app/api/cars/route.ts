@@ -6,6 +6,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from('cars')
     .select('*')
+    .is('deleted_at', null)
     .order('created_at', { ascending: false })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json(data)
@@ -16,25 +17,25 @@ export async function POST(request: Request) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await request.json()
-  const { title, brand, model, year, price, km_driven, fuel_type, transmission, color, description, images, is_featured, ownership, location } = body
-
-  if (!title || !brand || !price) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
-  }
 
   const { data, error } = await supabase.from('cars').insert({
-    title, brand, model,
-    year: parseInt(year),
-    price: parseInt(price),
-    km_driven: parseInt(km_driven) || 0,
-    fuel_type, transmission, color, description,
-    images: images || [],
-    is_featured: is_featured || false,
-    is_sold: false,
-    ownership: parseInt(ownership) || 1,
-    location,
+    title: body.title,
+    brand: body.brand,
+    model: body.model,
+    year: parseInt(body.year),
+    price: parseInt(body.price),
+    purchase_price: body.purchase_price ? parseInt(body.purchase_price) : null, // ✅ this was missing
+    km_driven: parseInt(body.km_driven),
+    fuel_type: body.fuel_type,
+    transmission: body.transmission,
+    color: body.color,
+    description: body.description,
+    ownership: parseInt(body.ownership),
+    location: body.location,
+    is_featured: body.is_featured || false,
+    images: body.images || [],
   }).select().single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json(data, { status: 201 })
+  return NextResponse.json(data)
 }

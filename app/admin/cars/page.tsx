@@ -5,7 +5,11 @@ import AdminCarActions from '@/components/AdminCarActions'
 import { Plus } from 'lucide-react'
 
 async function getCars(): Promise<Car[]> {
-  const { data } = await supabase.from('cars').select('*').order('created_at', { ascending: false })
+  const { data } = await supabase
+    .from('cars')
+    .select('*')
+    .is('deleted_at', null) // 👈 only show non-deleted
+    .order('created_at', { ascending: false })
   return (data as Car[]) || []
 }
 

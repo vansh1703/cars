@@ -19,8 +19,9 @@ export default function EditCarPage() {
   const [imageUrls, setImageUrls] = useState<string[]>([])
   const [form, setForm] = useState({
     title: '', brand: '', model: '', year: new Date().getFullYear(),
-    price: '', km_driven: '', fuel_type: 'Petrol', transmission: 'Manual',
-    color: '', description: '', ownership: 1, location: '', is_featured: false,
+    price: '', purchase_price: '', km_driven: '', fuel_type: 'Petrol',
+    transmission: 'Manual', color: '', description: '', ownership: 1,
+    location: '', is_featured: false,
   })
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export default function EditCarPage() {
         model: car.model,
         year: car.year,
         price: car.price.toString(),
+        purchase_price: car.purchase_price?.toString() || '',
         km_driven: car.km_driven.toString(),
         fuel_type: car.fuel_type,
         transmission: car.transmission,
@@ -76,11 +78,20 @@ export default function EditCarPage() {
     if (!imageUrls.length) { toast.error('Please upload at least one photo'); return }
     setLoading(true)
     const { error } = await supabase.from('cars').update({
-      ...form,
-      price: parseInt(form.price),
-      km_driven: parseInt(form.km_driven),
+      title: form.title,
+      brand: form.brand,
+      model: form.model,
       year: parseInt(form.year.toString()),
+      price: parseInt(form.price),
+      purchase_price: form.purchase_price ? parseInt(form.purchase_price) : null,
+      km_driven: parseInt(form.km_driven),
+      fuel_type: form.fuel_type,
+      transmission: form.transmission,
+      color: form.color,
+      description: form.description,
       ownership: parseInt(form.ownership.toString()),
+      location: form.location,
+      is_featured: form.is_featured,
       images: imageUrls,
     }).eq('id', id)
     setLoading(false)
@@ -97,12 +108,12 @@ export default function EditCarPage() {
   }
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="p-4 md:p-8 max-w-4xl">
       <div className="flex items-center gap-4 mb-8">
         <Link href="/admin/cars" className="text-gray-400 hover:text-brand-navy transition-colors"><ArrowLeft size={20} /></Link>
         <div>
           <h1 className="text-2xl font-bold text-brand-navy">Edit Car</h1>
-          <p className="text-gray-500 text-sm">{form.title}</p>
+          <p className="text-gray-500 text-sm truncate max-w-xs">{form.title}</p>
         </div>
       </div>
 
@@ -159,8 +170,14 @@ export default function EditCarPage() {
               <input type="number" name="year" value={form.year} onChange={handleChange} className="input-field" min="1990" max={new Date().getFullYear()} required />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Price (₹) *</label>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Listing Price (₹) *</label>
               <input type="number" name="price" value={form.price} onChange={handleChange} className="input-field" required />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                Purchase Price (₹) <span className="text-gray-400 normal-case font-normal ml-1">— private, never shown to buyers</span>
+              </label>
+              <input type="number" name="purchase_price" value={form.purchase_price} onChange={handleChange} className="input-field border-dashed" placeholder="Used for profit calculation" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">KM Driven</label>

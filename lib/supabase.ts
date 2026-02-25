@@ -29,6 +29,9 @@ export interface Car {
   sold_to_address?: string
   sold_to_notes?: string
   sold_at?: string
+  final_sell_price?: number
+  purchase_price?: number
+  deleted_at?: string
 }
 
 export interface Enquiry {
@@ -58,4 +61,19 @@ export interface AdminUser {
   email: string
   password: string
   name: string
+}
+
+export async function deleteCarImages(images: string[]) {
+  if (!images || images.length === 0) return
+  const fileNames = images
+    .map((url) => {
+      try {
+        return url.split('/car-images/')[1]
+      } catch {
+        return null
+      }
+    })
+    .filter(Boolean) as string[]
+  if (fileNames.length === 0) return
+  await supabase.storage.from('car-images').remove(fileNames)
 }

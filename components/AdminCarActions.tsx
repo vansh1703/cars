@@ -8,7 +8,6 @@ import toast from "react-hot-toast";
 import {
   Trash2,
   Eye,
-  CheckCircle,
   XCircle,
   Archive,
   ArchiveRestore,
@@ -19,7 +18,9 @@ import {
 export default function AdminCarActions({ car }: { car: Car }) {
   const [loading, setLoading] = useState(false);
   const [showSoldModal, setShowSoldModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [soldForm, setSoldForm] = useState({
+    final_sell_price: "",
     sold_to_name: "",
     sold_to_phone: "",
     sold_to_address: "",
@@ -47,8 +48,12 @@ export default function AdminCarActions({ car }: { car: Car }) {
 
   const handleMarkSold = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!soldForm.sold_to_name || !soldForm.sold_to_phone) {
-      toast.error("Name and phone are required");
+    if (
+      !soldForm.sold_to_name ||
+      !soldForm.sold_to_phone ||
+      !soldForm.final_sell_price
+    ) {
+      toast.error("Name, phone and final price are required");
       return;
     }
     setLoading(true);
@@ -57,6 +62,7 @@ export default function AdminCarActions({ car }: { car: Car }) {
       .update({
         is_sold: true,
         is_archived: false,
+        final_sell_price: parseInt(soldForm.final_sell_price),
         sold_to_name: soldForm.sold_to_name,
         sold_to_phone: soldForm.sold_to_phone,
         sold_to_address: soldForm.sold_to_address,
@@ -74,35 +80,35 @@ export default function AdminCarActions({ car }: { car: Car }) {
     }
   };
 
-  const markAvailable = async () => {
+  // Soft delete — marks as deleted but keeps in history
+  const deleteCar = async () => {
     setLoading(true);
+    // Delete images from storage first
+    if (car.images?.length) {
+      const fileNames = car.images
+        .map((url) => {
+          try {
+            return url.split("/car-images/")[1];
+          } catch {
+            return null;
+          }
+        })
+        .filter(Boolean) as string[];
+      if (fileNames.length > 0) {
+        await supabase.storage.from("car-images").remove(fileNames);
+      }
+    }
+    // Then soft-delete the car record
     const { error } = await supabase
       .from("cars")
-      .update({
-        is_sold: false,
-        sold_to_name: null,
-        sold_to_phone: null,
-        sold_to_address: null,
-        sold_to_notes: null,
-        sold_at: null,
-      })
+      .update({ deleted_at: new Date().toISOString() })
       .eq("id", car.id);
     setLoading(false);
-    if (error) toast.error("Failed to update");
-    else {
-      toast.success("Marked as available");
-      router.refresh();
-    }
-  };
-
-  const deleteCar = async () => {
-    if (!confirm("Delete this car? This cannot be undone.")) return;
-    setLoading(true);
-    const { error } = await supabase.from("cars").delete().eq("id", car.id);
-    setLoading(false);
-    if (error) toast.error("Failed to delete");
-    else {
-      toast.success("Car deleted");
+    if (error) {
+      toast.error("Failed to delete");
+    } else {
+      toast.success("Car and photos deleted");
+      setShowDeleteConfirm(false);
       router.refresh();
     }
   };
@@ -129,7 +135,7 @@ export default function AdminCarActions({ car }: { car: Car }) {
           <Pencil size={16} />
         </Link>
 
-        {/* Archive / Unarchive */}
+        {/* Archive — only if not sold */}
         {!car.is_sold && (
           <button
             onClick={toggleArchive}
@@ -145,8 +151,8 @@ export default function AdminCarActions({ car }: { car: Car }) {
           </button>
         )}
 
-        {/* Mark sold / available */}
-        {!car.is_sold ? (
+        {/* Mark sold — only if not already sold */}
+        {!car.is_sold && (
           <button
             onClick={() => setShowSoldModal(true)}
             disabled={loading}
@@ -155,20 +161,18 @@ export default function AdminCarActions({ car }: { car: Car }) {
           >
             <XCircle size={16} />
           </button>
-        ) : (
-          <button
-            onClick={markAvailable}
-            disabled={loading}
-            className="p-2 text-green-500 hover:bg-green-50 rounded-sm transition-colors"
-            title="Mark as Available"
-          >
-            <CheckCircle size={16} />
-          </button>
+        )}
+
+        {/* Sold badge — no unsold option */}
+        {car.is_sold && (
+          <span className="text-xs bg-red-100 text-red-500 font-bold px-2 py-1 rounded-sm">
+            SOLD
+          </span>
         )}
 
         {/* Delete */}
         <button
-          onClick={deleteCar}
+          onClick={() => setShowDeleteConfirm(true)}
           disabled={loading}
           className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-sm transition-colors"
           title="Delete"
@@ -180,7 +184,7 @@ export default function AdminCarActions({ car }: { car: Car }) {
       {/* Mark Sold Modal */}
       {showSoldModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-sm w-full max-w-md shadow-xl">
+          <div className="bg-white rounded-sm w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-5 border-b border-gray-100">
               <div>
                 <h3 className="font-bold text-brand-navy text-lg">
@@ -197,8 +201,25 @@ export default function AdminCarActions({ car }: { car: Car }) {
                 <X size={20} />
               </button>
             </div>
-
             <form onSubmit={handleMarkSold} className="p-5 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                  Final Sell Price (₹) *
+                </label>
+                <input
+                  type="number"
+                  placeholder={`Listed at ₹${car.price.toLocaleString("en-IN")}`}
+                  value={soldForm.final_sell_price}
+                  onChange={(e) =>
+                    setSoldForm((p) => ({
+                      ...p,
+                      final_sell_price: e.target.value,
+                    }))
+                  }
+                  className="input-field"
+                  required
+                />
+              </div>
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
                   Buyer Name *
@@ -220,7 +241,7 @@ export default function AdminCarActions({ car }: { car: Car }) {
                 </label>
                 <input
                   type="tel"
-                  placeholder="e.g. +91 98765 43210"
+                  placeholder="+91 98765 43210"
                   value={soldForm.sold_to_phone}
                   onChange={(e) =>
                     setSoldForm((p) => ({
@@ -254,7 +275,6 @@ export default function AdminCarActions({ car }: { car: Car }) {
                   Notes
                 </label>
                 <textarea
-                  placeholder="Any extra notes about the sale..."
                   value={soldForm.sold_to_notes}
                   onChange={(e) =>
                     setSoldForm((p) => ({
@@ -266,21 +286,13 @@ export default function AdminCarActions({ car }: { car: Car }) {
                   rows={3}
                 />
               </div>
-
               <div className="flex gap-3 pt-2">
                 <button
                   type="submit"
                   disabled={loading}
                   className="btn-gold flex-1 justify-center py-3 disabled:opacity-60"
                 >
-                  {loading ? (
-                    <span className="flex items-center gap-2">
-                      <span className="w-4 h-4 border-2 border-brand-navy/30 border-t-brand-navy rounded-full animate-spin" />
-                      Saving...
-                    </span>
-                  ) : (
-                    "Confirm Sale"
-                  )}
+                  {loading ? "Saving..." : "Confirm Sale"}
                 </button>
                 <button
                   type="button"
@@ -291,6 +303,50 @@ export default function AdminCarActions({ car }: { car: Car }) {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-sm w-full max-w-sm shadow-xl p-6">
+            <h3 className="font-bold text-brand-navy text-lg mb-2">
+              Remove Car?
+            </h3>
+            {car.is_sold ? (
+              <p className="text-gray-500 text-sm mb-5">
+                This car is marked as sold. It will be{" "}
+                <span className="font-semibold text-brand-navy">
+                  removed from All Cars
+                </span>{" "}
+                but will{" "}
+                <span className="font-semibold text-green-600">
+                  remain in Sales History
+                </span>
+                .
+              </p>
+            ) : (
+              <p className="text-gray-500 text-sm mb-5">
+                This car will be removed from all listings. This cannot be
+                undone.
+              </p>
+            )}
+            <div className="flex gap-3">
+              <button
+                onClick={deleteCar}
+                disabled={loading}
+                className="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 rounded-sm text-sm transition-colors disabled:opacity-60"
+              >
+                {loading ? "Removing..." : "Yes, Remove"}
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1 btn-outline py-2.5"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
