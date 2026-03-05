@@ -13,9 +13,9 @@ export default function Navbar() {
       <div className="bg-brand-charcoal border-b border-brand-steel/30">
         <div className="max-w-7xl mx-auto px-4 py-1.5 flex justify-between items-center text-xs text-gray-400">
           <span>Mon–Sat: 9AM – 7PM | Sun: 10AM – 5PM</span>
-          <a href="tel:+919999999999" className="flex items-center gap-1 text-brand-gold hover:text-brand-gold-light transition-colors">
+          <a href="tel:+91 98180 36523" className="flex items-center gap-1 text-brand-gold hover:text-brand-gold-light transition-colors">
             <Phone size={12} />
-            +91 99999 99999
+            +91 98180 36523
           </a>
         </div>
       </div>

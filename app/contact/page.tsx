@@ -65,7 +65,7 @@ export default function ContactPage() {
               <div className="bg-white p-3 rounded-sm shrink-0"><Phone className="text-brand-gold" size={20} /></div>
               <div>
                 <div className="font-semibold text-brand-navy text-sm mb-0.5">Phone</div>
-                <a href="tel:+919999999999" className="text-gray-500 text-sm hover:text-brand-gold transition-colors">+91 99999 99999</a>
+                <a href="tel:+91 98180 36523" className="text-gray-500 text-sm hover:text-brand-gold transition-colors">+91 98180 36523</a>
               </div>
             </div>
             <div className="flex items-start gap-4">
