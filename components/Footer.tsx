@@ -40,9 +40,9 @@ export default function Footer() {
               <span>123, Motor Market, Near Highway, Your City – 000000</span>
             </li>
             <li>
-              <a href="tel:+919999999999" className="flex items-center gap-2 text-gray-400 hover:text-brand-gold transition-colors">
+              <a href="tel:+919818036523" className="flex items-center gap-2 text-gray-400 hover:text-brand-gold transition-colors">
                 <Phone size={16} className="text-brand-gold" />
-                +91 99999 99999
+                +91 98180 36523
               </a>
             </li>
             <li>
@@ -56,8 +56,16 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-brand-steel/30">
-        <div className="max-w-7xl mx-auto px-4 py-4 text-center text-xs text-gray-500">
-          © {new Date().getFullYear()} Khalsa Motors. All rights reserved.
+        <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col items-center gap-2">
+          {/* Copyright Row */}
+          <div className="text-xs text-gray-500">
+            © {new Date().getFullYear()} Khalsa Motors. All rights reserved.
+          </div>
+          
+          {/* ADDED: Your Credit Row */}
+          <div className="text-xs text-gray-400 flex items-center gap-1">
+            Created with <span className="text-purple-500 animate-pulse">💜</span> by <span className="font-semibold text-gray-300">Vansh</span>
+          </div>
         </div>
       </div>
     </footer>

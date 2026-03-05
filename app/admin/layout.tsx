@@ -92,10 +92,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="bg-brand-gold p-1.5 rounded-sm shrink-0">
               <Car size={16} className="text-brand-navy" />
             </div>
-            <div>
+            {/* <div>
               <div className="font-bold text-white text-sm">KHALSA</div>
               <div className="text-brand-gold text-[10px] tracking-widest">ADMIN</div>
-            </div>
+            </div> */}
           </div>
         )}
         {sidebarCollapsed && (
@@ -189,7 +189,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="bg-brand-gold p-1 rounded-sm">
               <Car size={14} className="text-brand-navy" />
             </div>
-            <span className="font-bold text-white text-sm">KHALSA ADMIN</span>
+            {/* <span className="font-bold text-white text-sm">KHALSA ADMIN</span> */}
           </div>
           {(unread.enquiries + unread.messages) > 0 && (
             <span className="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">

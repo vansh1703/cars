@@ -146,14 +146,14 @@ export default async function CarsPage({ searchParams }: { searchParams: Promise
                   {available.map((car) => <CarCard key={car.id} car={car} />)}
                 </div>
               )}
-              {sold.length > 0 && (
+              {/* {sold.length > 0 && (
                 <div>
                   <h2 className="text-gray-400 font-bold mb-4 text-center">— Sold Cars —</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 opacity-60">
                     {sold.map((car) => <CarCard key={car.id} car={car} />)}
                   </div>
                 </div>
-              )}
+              )} */}
             </>
           )}
         </div>

@@ -3,6 +3,8 @@ import './globals.css'
 import { Toaster } from 'react-hot-toast'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import ChatBot from '@/components/ChatBot'
+
 
 export const metadata: Metadata = {
   title: 'Khalsa Motors | Premium Pre-Owned Cars',
@@ -30,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             success: { iconTheme: { primary: '#C9A84C', secondary: '#0A1628' } },
           }}
         />
+        <ChatBot />
       </body>
     </html>
   )

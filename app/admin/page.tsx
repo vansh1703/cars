@@ -118,11 +118,16 @@ export default function AdminDashboard() {
     const currentYear = new Date().getFullYear();
     await archiveYearIfNeeded(currentYear);
 
-    const [carsRes, soldRes] = await Promise.all([
+    const [carsRes, availableRes, soldRes] = await Promise.all([
       supabase
         .from("cars")
         .select("*", { count: "exact", head: true })
         .is("deleted_at", null),
+      supabase
+        .from("cars")
+        .select("*", { count: "exact", head: true })
+        .is("deleted_at", null)
+        .eq("is_sold", false),
       supabase
         .from("cars")
         .select("id, final_sell_price, purchase_price, price, sold_at")
@@ -133,7 +138,7 @@ export default function AdminDashboard() {
     const newStats = {
       totalCars: carsRes.count || 0,
       soldCars: soldCars.length,
-      availableCars: (carsRes.count || 0) - soldCars.length,
+      availableCars: availableRes.count || 0, // 👈 direct count instead of calculation
     };
     setStats(newStats);
 
