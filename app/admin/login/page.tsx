@@ -18,11 +18,20 @@ export default function AdminLoginPage() {
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({
+        email,
+        password,
+        website: '', // honeypot — always empty for real users
+      }),
     })
 
     const data = await res.json()
     setLoading(false)
+
+    if (res.status === 429) {
+      toast.error(data.error)
+      return
+    }
 
     if (!res.ok) {
       toast.error(data.error || 'Invalid credentials')
@@ -53,6 +62,15 @@ export default function AdminLoginPage() {
             <h2 className="font-semibold text-white">Sign In to Dashboard</h2>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Honeypot — hidden from real users, bots fill this */}
+            <input
+              type="text"
+              name="website"
+              className="hidden"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+            />
             <div className="relative">
               <Mail size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
               <input
@@ -75,7 +93,11 @@ export default function AdminLoginPage() {
                 required
               />
             </div>
-            <button type="submit" disabled={loading} className="btn-gold w-full justify-center py-3 disabled:opacity-60 mt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-gold w-full justify-center py-3 disabled:opacity-60 mt-2"
+            >
               {loading ? (
                 <span className="flex items-center gap-2">
                   <span className="w-4 h-4 border-2 border-brand-navy/30 border-t-brand-navy rounded-full animate-spin" />
