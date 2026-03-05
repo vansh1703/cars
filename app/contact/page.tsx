@@ -237,7 +237,7 @@ export default function ContactPage() {
           </form>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 pb-12">
+        {/* <div className="max-w-7xl mx-auto px-4 pb-12">
           <div className="rounded-sm overflow-hidden shadow-sm border border-gray-100">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3500.0!2d77.4428101!3d28.6733755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cf1bc19ad207d%3A0xceb62af6b62d0af9!2sKhalsa%20Motors!5e0!3m2!1sen!2sin!4v1"
@@ -249,7 +249,7 @@ export default function ContactPage() {
               referrerPolicy="no-referrer-when-downgrade"
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
