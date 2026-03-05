@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { Car, Phone, Mail, MapPin } from 'lucide-react'
 
+const MAPS_URL = 'https://www.google.com/maps/place/Khalsa+Motors/@28.6733755,77.4428101,17z/data=!3m1!4b1!4m6!3m5!1s0x390cf1bc19ad207d:0xceb62af6b62d0af9!8m2!3d28.6733755!4d77.4428101!16s%2Fg%2F1pv5y2jp9'
+
 export default function Footer() {
   return (
     <footer className="bg-brand-navy text-gray-300">
@@ -35,9 +37,12 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-semibold mb-4 text-sm tracking-wider uppercase">Contact Us</h4>
           <ul className="space-y-3 text-sm">
-            <li className="flex items-start gap-2 text-gray-400">
-              <MapPin size={16} className="text-brand-gold mt-0.5 shrink-0" />
-              <span>123, Motor Market, Near Highway, Your City – 000000</span>
+            <li>
+              <a href={MAPS_URL} target="_blank" rel="noopener noreferrer"
+                className="flex items-start gap-2 text-gray-400 hover:text-brand-gold transition-colors group">
+                <MapPin size={16} className="text-brand-gold mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+                <span>Shop no - 31, Ground Floor, Konark Building, RDC, Block 1, P & T Colony, Raj Nagar, Ghaziabad, Uttar Pradesh 201002</span>
+              </a>
             </li>
             <li>
               <a href="tel:+919818036523" className="flex items-center gap-2 text-gray-400 hover:text-brand-gold transition-colors">
@@ -57,12 +62,9 @@ export default function Footer() {
 
       <div className="border-t border-brand-steel/30">
         <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col items-center gap-2">
-          {/* Copyright Row */}
           <div className="text-xs text-gray-500">
             © {new Date().getFullYear()} Khalsa Motors. All rights reserved.
           </div>
-          
-          {/* ADDED: Your Credit Row */}
           <div className="text-xs text-gray-400 flex items-center gap-1">
             Created with <span className="text-purple-500 animate-pulse">💜</span> by <span className="font-semibold text-gray-300">Vansh</span>
           </div>
