@@ -2,6 +2,8 @@ import { supabase, Car } from "@/lib/supabase";
 import CarCard from "@/components/CarCard";
 import Link from "next/link";
 
+export const revalidate = 0
+
 async function getCars(sp: any): Promise<Car[]> {
   let query = supabase.from('cars').select('*').eq('is_archived', false)
 

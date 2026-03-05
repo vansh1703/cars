@@ -4,6 +4,8 @@ import Image from 'next/image'
 import AdminCarActions from '@/components/AdminCarActions'
 import { Plus } from 'lucide-react'
 
+export const revalidate = 0
+
 async function getCars(): Promise<Car[]> {
   const { data } = await supabase
     .from('cars')

@@ -3,6 +3,8 @@ import { Shield, Award, Headphones, ChevronRight, Star } from 'lucide-react'
 import { supabase, Car } from '@/lib/supabase'
 import CarCard from '@/components/CarCard'
 
+export const revalidate = 0
+
 async function getFeaturedCars(): Promise<Car[]> {
   const { data } = await supabase
     .from('cars')

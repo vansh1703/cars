@@ -17,6 +17,8 @@ import {
   MessageCircle,
 } from "lucide-react";
 
+export const revalidate = 0
+
 async function getCar(id: string): Promise<Car | null> {
   const { data } = await supabase.from("cars").select("*").eq("id", id).single();
   return (data as Car) || null;

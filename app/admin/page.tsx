@@ -407,15 +407,6 @@ export default function AdminDashboard() {
         >
           ↻ Refresh
         </button>
-        <button
-          onClick={() => setShowManualSale(true)}
-          className="btn-outline py-2 px-3 text-xs"
-        >
-          + Manual Sale
-        </button>
-        <Link href="/admin/cars/new" className="btn-gold py-2 px-3 text-xs">
-          <Plus size={14} /> Add Car
-        </Link>
       </div>
       <div className="flex items-center justify-between mb-6">
         <div>
