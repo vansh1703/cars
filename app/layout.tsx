@@ -1,10 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { Toaster } from 'react-hot-toast'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-import ChatBot from '@/components/ChatBot'
-
+import PublicLayout from '@/components/PublicLayout'
 
 export const metadata: Metadata = {
   title: 'Khalsa Motors | Premium Pre-Owned Cars',
@@ -15,11 +12,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        <main className="min-h-screen">
-          {children}
-        </main>
-        <Footer />
+        <PublicLayout>
+          <main className="min-h-screen">
+            {children}
+          </main>
+        </PublicLayout>
         <Toaster
           position="top-right"
           toastOptions={{
@@ -32,7 +29,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             success: { iconTheme: { primary: '#C9A84C', secondary: '#0A1628' } },
           }}
         />
-        <ChatBot />
       </body>
     </html>
   )
