@@ -20,8 +20,14 @@ import {
 export const revalidate = 0
 
 async function getCar(id: string): Promise<Car | null> {
-  const { data } = await supabase.from("cars").select("*").eq("id", id).single();
-  return (data as Car) || null;
+  const { data } = await supabase
+    .from('cars')
+    .select('*')
+    .eq('id', id)
+    .eq('is_archived', false)  // ✅ block archived
+    .eq('is_sold', false)      // ✅ block sold
+    .single()
+  return (data as Car) || null
 }
 
 export default async function CarDetailPage({
