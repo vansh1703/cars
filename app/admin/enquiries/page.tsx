@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import MarkReadButton from '@/components/MarkReadButton'
 import { MessageSquare } from 'lucide-react'
+export const revalidate = 0 
 
 export default async function AdminEnquiriesPage() {
   const { data: enquiries } = await supabase.from('enquiries').select('*').order('created_at', { ascending: false })

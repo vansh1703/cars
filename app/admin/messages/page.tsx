@@ -1,6 +1,8 @@
 import { supabase } from '@/lib/supabase'
 import MarkReadButton from '@/components/MarkReadButton'
 import { Mail } from 'lucide-react'
+export const revalidate = 0 
+
 
 export default async function AdminMessagesPage() {
   const { data: messages } = await supabase.from('messages').select('*').order('created_at', { ascending: false })
