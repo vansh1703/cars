@@ -18,14 +18,28 @@ async function getFeaturedCars(): Promise<Car[]> {
 }
 
 async function getStats() {
+  // Only count currently active listed cars (not deleted, not archived)
   const { count: total } = await supabase
-    .from("cars")
-    .select("*", { count: "exact", head: true });
+    .from('cars')
+    .select('*', { count: 'exact', head: true })
+    .is('deleted_at', null)
+    .eq('is_archived', false)
+
+  // Count all cars ever sold — keeps increasing over time
   const { count: sold } = await supabase
-    .from("cars")
-    .select("*", { count: "exact", head: true })
-    .eq("is_sold", true);
-  return { total: total || 0, sold: sold || 0 };
+    .from('cars')
+    .select('*', { count: 'exact', head: true })
+    .eq('is_sold', true)
+
+  // Also count manual sales and add them
+  const { count: manualSold } = await supabase
+    .from('manual_sales')
+    .select('*', { count: 'exact', head: true })
+
+  return {
+    total: total || 0,
+    sold: (sold || 0) + (manualSold || 0), // ✅ includes manual sales too
+  }
 }
 
 export default async function HomePage() {
@@ -72,14 +86,14 @@ export default async function HomePage() {
                 </div>
                 <div className="text-gray-500 text-sm">Cars Listed</div>
               </div>
-              <div>
+              {/* <div>
                 <div className="text-2xl font-bold text-brand-gold">
                   {stats.sold}+
                 </div>
                 <div className="text-gray-500 text-sm">Cars Sold</div>
-              </div>
+              </div> */}
               <div>
-                <div className="text-2xl font-bold text-brand-gold">14+</div>
+                <div className="text-2xl font-bold text-brand-gold">15+</div>
                 <div className="text-gray-500 text-sm">Years Trust</div>
               </div>
             </div>

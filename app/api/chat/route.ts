@@ -1,14 +1,25 @@
 import { NextResponse } from 'next/server'
+import { supabase } from '@/lib/supabase'
 
-const SYSTEM_PROMPT = `You are a helpful sales assistant for Khalsa Motors, a trusted pre-owned car dealership based in Delhi, India. Serving customers since 2010.
+async function getLiveContext() {
+  // Fetch available cars
+  const { data: cars } = await supabase
+    .from('cars')
+    .select('title, brand, model, year, price, km_driven, fuel_type, transmission, color, location')
+    .eq('is_sold', false)
+    .eq('is_archived', false)
+    .is('deleted_at', null)
+    .order('created_at', { ascending: false })
+    .limit(30)
 
-About Khalsa Motors:
-- Quality pre-owned cars, thoroughly inspected
-- Complete documentation: RC, insurance, service history
-- Contact: +91 98180 36523
-- Hours: Mon-Sat, 9AM-7PM, Delhi
+  const carList = cars && cars.length > 0
+    ? cars.map((c: any) =>
+        `- ${c.title} | ₹${c.price.toLocaleString('en-IN')} | ${c.year} | ${c.fuel_type} | ${c.transmission} | ${c.km_driven.toLocaleString('en-IN')} km${c.color ? ` | ${c.color}` : ''}${c.location ? ` | ${c.location}` : ''}`
+      ).join('\n')
+    : 'No cars currently listed. Ask them to check back soon or WhatsApp us.'
 
-Keep responses SHORT (2-3 sentences max), friendly, professional. Use simple Hindi words like bilkul, zaroor occasionally. For specific car prices/availability tell them to WhatsApp +91 98180 36523 or browse the website.`
+  return carList
+}
 
 export async function POST(request: Request) {
   try {
@@ -18,6 +29,31 @@ export async function POST(request: Request) {
     if (!apiKey) {
       return NextResponse.json({ reply: 'API key not configured. Please WhatsApp us at +91 98180 36523!' })
     }
+
+    // Fetch live car data
+    const liveCarList = await getLiveContext()
+
+    const SYSTEM_PROMPT = `You are a helpful sales assistant for Khalsa Motors, a trusted pre-owned car dealership.
+
+SHOP DETAILS (always use EXACTLY these details, never make up anything):
+- Name: Khalsa Motors
+- Address: Shop no - 31, Ground Floor, Konark Building, RDC, Block 1, P & T Colony, Raj Nagar, Ghaziabad, Uttar Pradesh 201002
+- Phone: +91 98180 36523
+- WhatsApp: +91 98180 36523
+- Hours: Monday to Sunday, 10AM to 7PM
+- Trusted since 2010
+
+CARS CURRENTLY AVAILABLE ON OUR WEBSITE (live data):
+${liveCarList}
+
+RULES YOU MUST FOLLOW:
+- ONLY mention cars from the list above. NEVER make up or suggest cars not in the list.
+- If asked about a car not in the list, say it is not currently available and suggest WhatsApp.
+- For address, ALWAYS use the exact address above. Never say Delhi — we are in Ghaziabad.
+- Keep responses SHORT (2-3 sentences max).
+- Be friendly and professional. Occasionally use Hindi words like bilkul, zaroor.
+- For test drives or visits, give the exact address above.
+- If no cars are listed, tell them to check back soon or WhatsApp us.`
 
     const filtered = messages.filter((m: any) => m.role === 'user' || m.role === 'assistant')
     while (filtered.length > 0 && filtered[0].role === 'assistant') filtered.shift()
@@ -42,13 +78,12 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         model: 'llama-3.1-8b-instant',
         messages: chatMessages,
-        max_tokens: 200,
-        temperature: 0.7,
+        max_tokens: 300,
+        temperature: 0.3, // ✅ lower = less hallucination
       }),
     })
 
     const text = await response.text()
-    console.log('Groq response:', response.status, text.slice(0, 300))
 
     if (!response.ok) {
       return NextResponse.json({
