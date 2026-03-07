@@ -51,9 +51,9 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <a href="mailto:info@khalsamotors.com" className="flex items-center gap-2 text-gray-400 hover:text-brand-gold transition-colors">
+              <a href="mailto:gursimrankaur1112@gmail.com" className="flex items-center gap-2 text-gray-400 hover:text-brand-gold transition-colors">
                 <Mail size={16} className="text-brand-gold" />
-                info@khalsamotors.com
+                gursimrankaur1112@gmail.com
               </a>
             </li>
           </ul>

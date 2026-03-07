@@ -125,10 +125,10 @@ export default function ContactPage() {
                   Email
                 </div>
                 <a
-                  href="mailto:info@khalsamotors.com"
+                  href="mailto:gursimrankaur1112@gmail.com"
                   className="text-gray-500 text-sm hover:text-brand-gold transition-colors"
                 >
-                  info@khalsamotors.com
+                  gursimrankaur1112@gmail.com
                 </a>
               </div>
             </div>
@@ -141,9 +141,7 @@ export default function ContactPage() {
                   Working Hours
                 </div>
                 <div className="text-gray-500 text-sm">
-                  Mon – Sat: 9:00 AM – 7:00 PM
-                  <br />
-                  Sun: 10:00 AM – 5:00 PM
+                  Mon – Sun: 10:00 AM – 7:00 PM
                 </div>
               </div>
             </div>
