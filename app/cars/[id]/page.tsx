@@ -163,7 +163,7 @@ export default async function CarDetailPage({
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Share This Car</p>
                 <div className="flex gap-2">
                   <a
-                    href={`https://wa.me/?text=${encodeURIComponent(`🚗 Check out this car at Khalsa Motors!\n\n*${car.title}*\nPrice: ₹${car.price.toLocaleString("en-IN")}\n\nhttps://khalsa-mototrs.vercel.app/cars/${car.id}`)}`}
+                    href={`https://wa.me/?text=${encodeURIComponent(`🚗 Check out this car at Khalsa Motors!\n\n*${car.title}*\nPrice: ₹${car.price.toLocaleString("en-IN")}\n\nhttps://khalsa-motors.vercel.app/cars/${car.id}`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 rounded-sm text-sm transition-colors"
