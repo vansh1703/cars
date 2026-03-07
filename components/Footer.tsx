@@ -66,7 +66,7 @@ export default function Footer() {
             © {new Date().getFullYear()} Khalsa Motors. All rights reserved.
           </div>
           <div className="text-xs text-gray-400 flex items-center gap-1">
-            Created with <span className="text-purple-500 animate-pulse"></span> by <span className="font-semibold text-gray-300">Vansh Varun</span>
+            Created by<span className="font-semibold text-gray-300">Vansh Varun</span>
           </div>
         </div>
       </div>
