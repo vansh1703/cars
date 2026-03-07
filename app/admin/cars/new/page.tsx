@@ -14,11 +14,12 @@ export default function AddCarPage() {
   const [loading, setLoading] = useState(false);
   const [uploadingImages, setUploadingImages] = useState(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+  // Change year in initial state from number to string
   const [form, setForm] = useState({
     title: "",
     brand: "",
     model: "",
-    year: new Date().getFullYear(),
+    year: new Date().getFullYear().toString(), // ✅ string not number
     price: "",
     purchase_price: "",
     km_driven: "",
@@ -26,7 +27,7 @@ export default function AddCarPage() {
     transmission: "Manual",
     color: "",
     description: "",
-    ownership: 1,
+    ownership: "1", // ✅ also string
     location: "",
     is_featured: false,
   });
@@ -86,6 +87,8 @@ export default function AddCarPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...form,
+         year: parseInt(form.year),           // ✅ explicit parse
+  ownership: parseInt(form.ownership),
         images: imageUrls,
         purchase_price: form.purchase_price
           ? parseInt(form.purchase_price)
