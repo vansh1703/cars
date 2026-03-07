@@ -41,7 +41,7 @@ export default function AddCarPage() {
     setForm((prev) => ({
       ...prev,
       [name]:
-        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+        type === "checkbox" ? (e.target as HTMLInputElement).checked : value, // ✅ always store as string, parse on submit
     }));
   };
 
@@ -70,7 +70,6 @@ export default function AddCarPage() {
     if (uploadedUrls.length)
       toast.success(`${uploadedUrls.length} photo(s) uploaded!`);
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title || !form.brand || !form.price) {
@@ -86,13 +85,23 @@ export default function AddCarPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        ...form,
-         year: parseInt(form.year),           // ✅ explicit parse
-  ownership: parseInt(form.ownership),
-        images: imageUrls,
+        title: form.title,
+        brand: form.brand,
+        model: form.model,
+        year: parseInt(String(form.year)),
+        price: parseInt(form.price),
         purchase_price: form.purchase_price
           ? parseInt(form.purchase_price)
           : null,
+        km_driven: parseInt(form.km_driven),
+        fuel_type: form.fuel_type,
+        transmission: form.transmission,
+        color: form.color,
+        description: form.description,
+        ownership: parseInt(String(form.ownership)),
+        location: form.location,
+        is_featured: form.is_featured,
+        images: imageUrls,
       }),
     });
     const data = await res.json();
@@ -104,7 +113,7 @@ export default function AddCarPage() {
       router.push("/admin/cars");
     }
   };
-
+  
   return (
     <div className="p-4 md:p-8 max-w-4xl">
       <div className="flex items-center gap-4 mb-8">
