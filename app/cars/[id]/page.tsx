@@ -182,7 +182,7 @@ export default async function CarDetailPage({
                   +91 98180 36523
                 </a>
                 <p className="text-gray-400 text-xs text-center mt-0.5 mb-3">
-                  Mon–Sat: 9AM – 7PM
+                  Mon–Sun: 10AM – 7PM
                 </p>
                 <a
                   href={`https://wa.me/919818036523?text=${whatsappMsg}`}
