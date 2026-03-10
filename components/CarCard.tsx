@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Car } from '@/lib/supabase'
-import { Fuel, Gauge, Calendar, Users } from 'lucide-react'
+import { Fuel, Gauge, Calendar, Users, MessageCircle } from 'lucide-react'
 import CarCardMenu from './CarCardMenu'
 
 export default function CarCard({ car }: { car: Car }) {
@@ -40,14 +40,15 @@ export default function CarCard({ car }: { car: Car }) {
 
         {/* Content */}
         <div className="p-4">
-          <div className="flex justify-between items-start mb-2">
-            <div>
-              <h3 className="font-bold text-brand-navy text-lg leading-tight">{car.title}</h3>
-              <p className="text-gray-500 text-sm">{car.brand} {car.model}</p>
-            </div>
-            <div className="font-bold text-brand-gold text-xl shrink-0 ml-2">
-              ₹{car.price.toLocaleString('en-IN')}
-            </div>
+          <div className="mb-2">
+            <h3 className="font-bold text-brand-navy text-lg leading-tight">{car.title}</h3>
+            <p className="text-gray-500 text-sm">{car.brand} {car.model}</p>
+          </div>
+
+          {/* Price hidden — contact for price */}
+          <div className="flex items-center gap-1.5 text-brand-gold font-semibold text-sm bg-brand-gold/10 border border-brand-gold/20 px-3 py-1.5 rounded-sm w-fit">
+            <MessageCircle size={13} />
+            Contact for Price
           </div>
 
           <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-gray-100">
